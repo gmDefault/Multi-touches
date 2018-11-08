@@ -25,6 +25,9 @@ function multiTouch(element: HTMLElement) : void {
                 useCapture: false,
                 action: (evt : TouchEvent) : boolean => {
                     // To be completed
+                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX, evt.changedTouches.item(0).pageY);
+                    originalMatrix = transfo.getMatrixFromElement(element);
+                    Pt1_coord_element = Pt1_coord_parent.matrixTransform(originalMatrix.inverse());
                     return true;
                 }
             },
@@ -35,7 +38,8 @@ function multiTouch(element: HTMLElement) : void {
                 action: (evt : TouchEvent) : boolean => {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    // To be completed
+                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX, evt.changedTouches.item(0).pageY);
+                    transfo.drag(element,originalMatrix,Pt1_coord_element, Pt1_coord_parent);
                     return true;
                 }
             },

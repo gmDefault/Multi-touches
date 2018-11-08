@@ -56,6 +56,9 @@ export let drag =       ( element               : HTMLElement
                         , Pt_coord_parent       : SVGPoint
                         ) => {
 	// TO BE DONE
+    originalMatrix.e = Pt_coord_parent.x - originalMatrix.a * Pt_coord_element.x - originalMatrix.c * Pt_coord_element.y;
+    originalMatrix.f = Pt_coord_parent.y - originalMatrix.b * Pt_coord_element.x - originalMatrix.d * Pt_coord_element.y;
+    setMatrixToElement(element, originalMatrix);
 };
 
 //______________________________________________________________________________________________________________________
@@ -67,5 +70,27 @@ export let rotozoom =   ( element           : HTMLElement
                         , Pt2_coord_parent  : SVGPoint
                         ) => {
 	// TO BE DONE
+    let dx : number = Pt2_coord_element.x - Pt1_coord_element.x;
+    let dy : number = Pt2_coord_element.y - Pt1_coord_element.y;
+    let dxp : number = Pt2_coord_parent.x - Pt1_coord_parent.x;
+    let dyp : number = Pt2_coord_parent.y - Pt1_coord_parent.y;
+    let c : number;
+    let s : number;
+    if(dx !== 0 && dy !== 0) {
+        if (dx === 0 && dy !== dx) {
+            s = -dxp / dy;
+            c = dyp / dy;
+        } else if (dy === 0 && dy !== dx) {
+            s = dyp / dx;
+            c = dxp / dx;
+        } else if (dx !== 0 && dy !== 0) {
+            s = (dyp / dy - dxp / dx) / (dy / dx + dx / dy);
+            c = (dxp + s * dy) / dx;
+        }
+        let e: number = Pt1_coord_parent.x - c * Pt1_coord_element.x + s * Pt1_coord_element.y;
+        let f: number = Pt1_coord_parent.y - s * Pt1_coord_element.x - c * Pt1_coord_element.y;
+        setMatrixCoordToElement(element, c, s, -s, c, e, f);
+    }
+
 };
 
