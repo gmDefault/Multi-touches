@@ -24,10 +24,12 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt : TouchEvent) : boolean => {
-                    // To be completed
-                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX, evt.changedTouches.item(0).pageY);
+
+                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
                     originalMatrix = transfo.getMatrixFromElement(element);
+
                     Pt1_coord_element = Pt1_coord_parent.matrixTransform(originalMatrix.inverse());
+
                     return true;
                 }
             },
@@ -38,8 +40,16 @@ function multiTouch(element: HTMLElement) : void {
                 action: (evt : TouchEvent) : boolean => {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX, evt.changedTouches.item(0).pageY);
-                    transfo.drag(element,originalMatrix,Pt1_coord_element, Pt1_coord_parent);
+
+                    if(evt.changedTouches.item(0).identifier===1){
+                     console.log("PBBBBBBBBBBBBB");
+                        Pt1_coord_parent=Pt2_coord_parent;
+                        Pt1_coord_element=Pt2_coord_element;
+                    }
+                    Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
+                    transfo.drag(element,originalMatrix,Pt1_coord_element,Pt1_coord_parent);
+                    console.log("DRAGGING");
+
                     return true;
                 }
             },
@@ -49,16 +59,20 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
-                    // To be completed
+                    console.log("INCATIVE");
                     return true;
                 }
             },
             { from: MT_STATES.Translating, to: MT_STATES.Rotozooming,
                 eventTargets: [element],
                 eventName: ["touchstart"],
-                useCapture: false,
+                useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
-                    // To be completed
+                    console.log("entering Rotozooming");
+                    originalMatrix = transfo.getMatrixFromElement(element);
+                   // Pt2_coord_element = transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
+                    Pt2_coord_parent= transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
+                    Pt2_coord_element = Pt2_coord_parent.matrixTransform(originalMatrix.inverse());
                     return true;
                 }
             },
@@ -69,7 +83,23 @@ function multiTouch(element: HTMLElement) : void {
                 action: (evt : TouchEvent) : boolean => {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    // To be completed
+                    console.log("Rotozooming");
+                    if(evt.changedTouches.length===2){
+
+                        Pt2_coord_parent = transfo.getPoint(evt.changedTouches.item(1).pageX,evt.changedTouches.item(1).pageY );
+                        Pt1_coord_parent = transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
+                    }
+                    else if(evt.changedTouches.length===1){
+                        if(evt.changedTouches.item(0).identifier!==0){
+                            Pt2_coord_parent= transfo.getPoint(evt.changedTouches.item(0).pageX,evt.changedTouches.item(0).pageY );
+                        }
+                    }
+                    transfo.rotozoom(element,originalMatrix,Pt1_coord_element,Pt1_coord_parent,Pt2_coord_element,Pt2_coord_parent);
+
+
+
+
+
                     return true;
                 }
             },
@@ -80,7 +110,13 @@ function multiTouch(element: HTMLElement) : void {
                 useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
                     const touch = getRelevantDataFromEvent(evt);
-                    // To be completed
+                    console.log("entering Translating");
+                    if(evt.changedTouches.item(0).identifier===0){
+                        Pt1_coord_parent=Pt2_coord_parent;
+                        Pt1_coord_element=Pt2_coord_element;
+                        console.log("PLSLSLSLSLSLSLSLS");
+                    }
+                    originalMatrix = transfo.getMatrixFromElement(element);
                     return true;
                 }
             }

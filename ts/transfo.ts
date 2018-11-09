@@ -55,10 +55,9 @@ export let drag =       ( element               : HTMLElement
                         , Pt_coord_element      : SVGPoint
                         , Pt_coord_parent       : SVGPoint
                         ) => {
-	// TO BE DONE
-    originalMatrix.e = Pt_coord_parent.x - originalMatrix.a * Pt_coord_element.x - originalMatrix.c * Pt_coord_element.y;
-    originalMatrix.f = Pt_coord_parent.y - originalMatrix.b * Pt_coord_element.x - originalMatrix.d * Pt_coord_element.y;
-    setMatrixToElement(element, originalMatrix);
+	originalMatrix.e=Pt_coord_parent.x - originalMatrix.a * Pt_coord_element.x - originalMatrix.c * Pt_coord_element.y;
+    originalMatrix.f=Pt_coord_parent.y - originalMatrix.b * Pt_coord_element.x - originalMatrix.d * Pt_coord_element.y;
+    setMatrixToElement(element,originalMatrix);
 };
 
 //______________________________________________________________________________________________________________________
@@ -69,28 +68,29 @@ export let rotozoom =   ( element           : HTMLElement
                         , Pt2_coord_element : SVGPoint
                         , Pt2_coord_parent  : SVGPoint
                         ) => {
-	// TO BE DONE
-    let dx : number = Pt2_coord_element.x - Pt1_coord_element.x;
-    let dy : number = Pt2_coord_element.y - Pt1_coord_element.y;
-    let dxp : number = Pt2_coord_parent.x - Pt1_coord_parent.x;
-    let dyp : number = Pt2_coord_parent.y - Pt1_coord_parent.y;
-    let c : number;
-    let s : number;
-    if(dx !== 0 && dy !== 0) {
-        if (dx === 0 && dy !== dx) {
+    let dx  = Pt2_coord_element.x - Pt1_coord_element.x ;
+    let dy  = Pt2_coord_element.y - Pt1_coord_element.y;
+    let dxp = Pt2_coord_parent.x - Pt1_coord_parent.x;
+    let dyp = Pt2_coord_parent.y - Pt1_coord_parent.y;
+    let s;
+    let c;
+    let f;
+    let e;
+    if(dy!==0 || dx!==0) {
+
+        if (dx === 0 && dy !== 0) {
             s = -dxp / dy;
             c = dyp / dy;
-        } else if (dy === 0 && dy !== dx) {
+        } else if (dx !== 0 && dy === 0) {
             s = dyp / dx;
             c = dxp / dx;
         } else if (dx !== 0 && dy !== 0) {
             s = (dyp / dy - dxp / dx) / (dy / dx + dx / dy);
-            c = (dxp + s * dy) / dx;
+            c = (dyp - s * dx) / dy;
         }
-        let e: number = Pt1_coord_parent.x - c * Pt1_coord_element.x + s * Pt1_coord_element.y;
-        let f: number = Pt1_coord_parent.y - s * Pt1_coord_element.x - c * Pt1_coord_element.y;
+        e = Pt1_coord_parent.x - c * Pt1_coord_element.x + s * Pt1_coord_element.y;
+        f = Pt1_coord_parent.y - s * Pt1_coord_element.x - c * Pt1_coord_element.y;
         setMatrixCoordToElement(element, c, s, -s, c, e, f);
     }
-
 };
 
