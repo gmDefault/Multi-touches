@@ -55,8 +55,9 @@ export let drag =       ( element               : HTMLElement
                         , Pt_coord_element      : SVGPoint
                         , Pt_coord_parent       : SVGPoint
                         ) => {
-	originalMatrix.e=Pt_coord_parent.x - originalMatrix.a * Pt_coord_element.x - originalMatrix.c * Pt_coord_element.y;
+    originalMatrix.e=Pt_coord_parent.x - originalMatrix.a * Pt_coord_element.x - originalMatrix.c * Pt_coord_element.y;
     originalMatrix.f=Pt_coord_parent.y - originalMatrix.b * Pt_coord_element.x - originalMatrix.d * Pt_coord_element.y;
+    // applying the transformation to the image
     setMatrixToElement(element,originalMatrix);
 };
 
@@ -76,8 +77,9 @@ export let rotozoom =   ( element           : HTMLElement
     let c;
     let f;
     let e;
+     // if we didn't move, (dx== && dy==) we do nothing.
     if(dy!==0 || dx!==0) {
-
+        // all these mathematical equations are provided in the subject
         if (dx === 0 && dy !== 0) {
             s = -dxp / dy;
             c = dyp / dy;
@@ -90,7 +92,8 @@ export let rotozoom =   ( element           : HTMLElement
         }
         e = Pt1_coord_parent.x - c * Pt1_coord_element.x + s * Pt1_coord_element.y;
         f = Pt1_coord_parent.y - s * Pt1_coord_element.x - c * Pt1_coord_element.y;
-        setMatrixCoordToElement(element, c, s, -s, c, e, f);
+        // applying the transformation to the image
+	setMatrixCoordToElement(element, c, s, -s, c, e, f);
     }
 };
 
